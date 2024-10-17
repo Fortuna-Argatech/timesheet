@@ -28,7 +28,7 @@ Sistem manajemen timesheet ini memungkinkan sinkronisasi data dari API eksternal
 
  1. Clone Repository:
  ```
- git clone https://github.com/username/timesheet-management.git cd timesheet-management
+ git clone https://github.com/username/timesheet-management.git
  ```
  
  2. Install dependencies:
