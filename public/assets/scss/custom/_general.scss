@@ -1,0 +1,273 @@
+/*********************************/
+/*             General           */
+/*===============================*/
+html {
+    @apply scroll-smooth;
+}
+body{
+    overflow-x: hidden !important;
+    @apply text-base;
+    &[data-layout-mode="dark"] .top-icon,
+    &[data-layout-mode="light"] .top-icon{
+        @apply  text-slate-500;
+    } 
+}
+  
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    @apply font-sans;
+}
+
+p {
+    @apply leading-relaxed;
+}
+
+@media (max-width: 1024px){
+    .page-wrapper {
+        margin-left: 0 !important;
+        min-width: 100% !important;
+    }
+}
+
+.ti{
+  stroke-width: 1px !important;
+}
+
+.form-input{
+  @apply text-base;
+}
+
+.icon-dual {
+  fill: rgba(161,172,184,.12);
+}
+
+.clip-path-bottom{
+  clip-path: ellipse(100% 77% at 50% 23%);
+}
+
+
+// Crypto
+
+.sell-trade {
+    animation: sellanimation 4s infinite;
+  }
+  
+  @keyframes sellanimation {
+    40%{background-color:rgba(255, 255, 255, 0.2);}
+    100% {background-color: rgba(255, 0, 0, 0.2);}
+  }
+  
+  .buy-trade {
+    animation: buyanimation 3s infinite;
+  }
+  
+  @keyframes buyanimation {
+    40%{background-color:rgba(255, 255, 255, 0.2);}
+    100% {background-color: rgba(0, 158, 0, 0.2);}
+  }
+  
+  .sell-trade-2 {
+    animation: sellanimation-2 2s infinite;
+  }
+  
+  @keyframes sellanimation-2 {
+    40%{background-color:rgba(255, 255, 255, 0.2);}
+    100% {background-color: rgba(255, 0, 0, 0.2);}
+  }
+  
+  .buy-trade-2 {
+    animation: buyanimation-2 2s infinite;
+  }
+  
+  @keyframes buyanimation-2 {
+    40%{background-color:rgba(255, 255, 255, 0.2);}
+    100% {background-color: rgba(0, 158, 0, 0.2);}
+  }
+  
+  .sell-trade-3 {
+    animation: sellanimation-3 5s infinite;
+  }
+  
+  @keyframes sellanimation-3 {
+    40%{background-color:rgba(255, 255, 255, 0.2);}
+    100% {background-color: rgba(255, 0, 0, 0.2);}
+  }
+  
+  .buy-trade-3 {
+    animation: buyanimation-3 5s infinite;
+  }
+  
+  @keyframes buyanimation-3 {
+    40%{background-color:rgba(255, 255, 255, 0.2);}
+    100% {background-color: rgba(0, 158, 0, 0.2);}
+  }
+  
+  .sell-trade-4 {
+    animation: sellanimation-4 5s infinite;
+  }
+  
+  @keyframes sellanimation-4 {
+    40%{background-color:rgba(255, 255, 255, 0.2);}
+    100% {background-color: rgba(255, 0, 0, 0.2);}
+  }
+  
+  .buy-trade-4 {
+    animation: buyanimation-4 5s infinite;
+  }
+  
+  @keyframes buyanimation-4 {
+    40%{background-color:rgba(255, 255, 255, 0.2);}
+    100% {background-color: rgba(0, 158, 0, 0.2);}
+  }
+
+  
+.ccc-widget {
+  div:first-child {
+    @apply border-0
+  }
+  .histoTitle {
+    @apply hidden
+  }
+  div.histoRow:nth-of-type(2) {
+    @apply font-medium text-slate-500 text-[13px] bg-slate-200/20   dark:text-slate-300
+  }
+  div.histoRow {
+    @apply border-b-slate-200 text-[13px] text-slate-600 p-[11px] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400
+  }
+  div:first-child {
+    @apply border-0
+  }
+  div.histoRow:nth-of-type(2) .histoChange {
+    @apply font-medium
+  }
+  &.ccc-histo-week{
+    > div{
+      border: none !important;
+    }
+  }
+}
+
+
+// Tree
+
+  .folder-icon div.listree-submenu-heading.collapsed:before {
+    content: "\f07b";
+    font-family: 'Font Awesome 5 Free';
+    @apply dark:text-slate-400;
+  }
+  
+  .folder-icon div.listree-submenu-heading.expanded:before {
+    content: "\f07c";
+    font-family: 'Font Awesome 5 Free';
+    @apply dark:text-slate-400;
+  }
+  .listree-submenu-heading{
+    @apply dark:text-slate-400;
+  }
+  ul.listree-submenu-items{
+    border-left: 1px dashed theme('colors.slate.500/0.3');
+  }
+
+
+  // Gallery
+
+  
+//Tobii Lighbox
+.tobii-zoom__icon{
+  display: none;
+}
+.tobii-zoom{
+  display: block !important;
+}
+
+.tobii__btn svg {
+  height: 30px;
+  width: auto;
+}
+.tobii__counter {
+  font-size: 16px;
+}
+.tobii-zoom {
+  display: block !important;
+}
+.tobii-zoom__icon {
+  display: none;
+}
+#grid {
+  padding: 0 !important;
+}
+
+
+
+// Projects
+.step{
+  @apply list-none
+   text-slate-600 
+   uppercase 
+   flex-1 
+   text-xs 
+   relative 
+   py-0 
+   px-2 
+   font-medium 
+   before:content-[attr(before)] 
+   before:w-6 
+   before:h-6 
+   before:inline-block 
+   before:text-xs 
+   before:rounded-full 
+   before:relative 
+   before:mt-0 
+   before:mx-0  
+   before:mr-4  
+   before:mb-[20px] 
+   before:z-1 
+   before:text-slate-600 
+   dark:before:text-slate-300 
+   before:bg-slate-100 
+   dark:before:bg-slate-700 
+   before:ring-1 
+   before:ring-slate-200 
+   dark:before:ring-slate-700 
+   before:ring-offset-2 
+   before:ring-offset-slate-50 
+   dark:before:ring-offset-slate-800 
+   before:leading-6 
+   before:text-center
+   md:before:block
+   md:before:mr-auto
+   md:before:ml-auto;
+   span{
+    @apply text-slate-400;
+  }
+}
+.step-inner{
+ @apply after:w-full 
+ after:border 
+ after:border-dashed 
+ after:border-slate-300 
+ dark:after:border-slate-700/40 
+ after:absolute 
+ after:top-3 
+ after:-left-[50%] 
+ after:-z-1
+ after:hidden
+ md:after:block;
+
+}
+.complete{
+  @apply before:bg-primary-100 before:text-primary-500 before:ring-primary-100 dark:before:bg-slate-900 dark:before:ring-slate-700;
+}
+.continuous{
+  @apply before:bg-primary-500 before:text-white before:ring-primary-500 dark:before:bg-primary-500 dark:before:text-white dark:before:ring-primary-500;
+  span{
+    @apply text-primary-500;
+  }
+}
+
+.finish{
+  @apply before:bg-green-500 before:text-white before:ring-green-500;
+  span{
+    @apply text-green-500;
+  }
+}
