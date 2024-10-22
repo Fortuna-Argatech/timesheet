@@ -53,8 +53,8 @@ class ActivityTypeApiController extends Controller
             $timeLogs = TimeLog::where('activity_type', $activityType->name)->get();
             // Update billing rate dan billing amount pada time logs yang terkait
             foreach ($timeLogs as $timeLog) {
-                $newBillingAmount = $request->rate * $timeLog->hours;
-                $timeLog->billing_rate = $request->rate;
+                $newBillingAmount = (new EmployeeApiController)->calculateEmployeeRate($timeLog->employee_id, $request->rate) * $timeLog->hours;
+                $timeLog->billing_rate = (new EmployeeApiController)->calculateEmployeeRate($timeLog->employee_id, $request->rate);
                 $timeLog->billing_amount = $newBillingAmount;
                 $timeLog->save();
             }

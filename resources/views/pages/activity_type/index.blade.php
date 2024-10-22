@@ -1,10 +1,10 @@
 <x-layout>
-    <x-slot name="title">Data Activity Type</x-slot>
+    <x-slot name="title">Activity Type Data</x-slot>
 
     <div class="relative w-full bg-white rounded-md shadow dark:bg-slate-800">
         <div
             class="flex items-center justify-between px-4 py-3 border-b border-dashed border-slate-200 dark:border-slate-700 dark:text-slate-300/70">
-            <h4 class="font-medium">Data Activity Type</h4>
+            <h4 class="font-medium">Activity Type Data</h4>
             <a href="#modalcenter" data-modal-toggle="modal"
                 class="px-3 py-2 text-sm font-semibold text-white bg-blue-500 rounded lg:px-4 collapse:bg-green-100 hover:bg-blue-600">Create
                 New</a>
