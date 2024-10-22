@@ -27,6 +27,7 @@ function handleFormSubmit(e) {
     let rate = $('#activity-type').val();
     let hours = (toTime - fromTime) / (1000 * 60 * 60);
     let totalIDR = rate * hours;
+
     executeExample('createOrUpdate', message).then(function (result) {
         if (result.isConfirmed) {
             $.ajax({
@@ -34,6 +35,7 @@ function handleFormSubmit(e) {
                 type: method,
                 data: {
                     _token: $('input[name="_token"]').val(),
+                    employee_id: $('#employee_id').val(),
                     activity_type: activityType,
                     from_time: fromTimeString,
                     to_time: toTimeString,
@@ -62,6 +64,7 @@ function handleEditClick() {
     let id = $(this).data('id');
     $.get('/api/time-logs/' + id, function (data) {
         $('#id').val(data.id);
+        $('#employee_id').val(data.employee_id);
         $('#timesheet').val(data.timesheet_name_id);
         $('#from-time').val(data.from_time);
         $('#to-time').val(data.to_time);

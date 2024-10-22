@@ -126,7 +126,7 @@
                         @csrf
                         {{-- Parsing name for edit timelog --}}
                         <input type="hidden" name="id" id="id" value="">
-
+                        <input type="hidden" name="employee_id" id="employee_id" value="">
                         <div class="mb-2">
                             <label for="timesheet" class="text-sm font-medium text-slate-600 dark:text-slate-400">ID
                                 Timesheet</label>

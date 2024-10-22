@@ -11,6 +11,7 @@ class TimeLog extends Model
 
     protected $fillable = [
         'timesheet_name_id',
+        'employee_id',
         'email',
         'activity_type',
         'from_time',
