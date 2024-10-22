@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/js/pages/activity-type.js',
                 'resources/js/pages/time-log.js',
                 'resources/js/pages/timesheet.js',
+                'resources/js/pages/employee.js',
             ],
             refresh: true,
         }),
