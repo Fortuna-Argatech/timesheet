@@ -13,6 +13,7 @@ Sistem manajemen timesheet ini memungkinkan sinkronisasi data dari API eksternal
 - View dan Delete **Timesheet**.
 - Edit dan Delete **Time Logs**.
 - Create, Read, Update, Delete **Activity Type**
+- View dan Update **Employee** (Baru)
 - **Sinkronisasi API** dengan sistem ERP eksternal.
 - **Validasi input** dengan masing-masing Request.
 - **AJAX** untuk operasi tanpa reload halaman.
