@@ -4,17 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Timesheet extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name_id',
+        'timesheet_id',
         'employee_id',
-        'employee_name',
-        'email',
-        'company',
         'start_date',
         'end_date',
         'total_hours',
@@ -28,9 +27,14 @@ class Timesheet extends Model
     ];
 
     // protected $primaryKey = "name_id";
-    public function timeLogs()
+    public function timeLogs(): HasMany
     {
-        return $this->hasMany(TimeLog::class, 'timesheet_name_id', 'name_id');
+        return $this->hasMany(TimeLog::class, 'timesheet_id', 'timesheet_id');
+    }
+
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
     }
 
     public function getFormattedBillableAmountAttribute()

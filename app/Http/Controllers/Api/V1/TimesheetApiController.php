@@ -28,23 +28,45 @@ class TimesheetApiController extends Controller
 
         try {
             // Mengambil data timesheet dari API
-            $timesheetData = $this->fetchTimesheetDataFromAPI($validated['timesheet_id']);
+            $timesheetFetched = $this->fetchTimesheetDataFromAPI($validated['timesheet_id']);
 
             // Memastikan data yang diambil valid
-            if (!$timesheetData) {
-                return response()->json(['message' => 'Timesheet not found or invalid response'], 404);
+            if (!$timesheetFetched) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Timesheet not found or invalid response',
+                    'data' => $timesheetFetched
+                ], 404);
             }
 
             // Menyimpan timesheet dan log waktu secara atomik
-            DB::transaction(function () use ($timesheetData) {
-                $timesheet = $this->storeTimesheet($timesheetData);
-                (new TimeLogApiController)->storeTimeLogs($timesheet, $timesheetData['time_logs']);
+            DB::transaction(function () use ($timesheetFetched) {
+                // simpan data karyawan terlebih dahulu
+                $employee = [
+                    'employee_id' => $timesheetFetched['employee'],
+                    'employee_name' => $timesheetFetched['employee_name'],
+                    'owner' => $timesheetFetched['owner'],
+                    'company' => $timesheetFetched['company']
+                ];
+                (new EmployeeApiController)->storeEmployee($employee);
+                $timesheet = $this->storeTimesheet($timesheetFetched);
+                (new TimeLogApiController)->storeTimeLogs($timesheet, $timesheetFetched['time_logs']);
             });
 
-            return response()->json(['message' => 'Timesheet fetched and saved successfully'], 200);
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Timesheet fetched and saved successfully'
+            ], 200);
+
         } catch (Exception $e) {
             // Menangani kesalahan dengan pesan yang informatif
-            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+            return response()->json(
+                [
+                    'status' => 500,
+                    'success' => false,
+                    'message' => 'Error: ' . $e->getMessage()
+                ],500);
         }
     }
 
@@ -60,35 +82,32 @@ class TimesheetApiController extends Controller
             'Authorization' => env('API_TOKEN'),
         ])->withoutVerifying()->get($this->apiUrl . '/' . $timesheetId);
 
-        return $response->failed() ? null : $response->json()['data'] ?? null;
+        return $response->failed() ? null : $response->json()['data'];
     }
 
     /**
      * Menyimpan data timesheet ke dalam database.
      *
-     * @param array $data
+     * @param array $timesheet
      * @return Timesheet
      */
-    private function storeTimesheet(array $data)
+    private function storeTimesheet(array $timesheet)
     {
         // Menggunakan firstOrCreate untuk menghindari duplikasi data
         return Timesheet::firstOrCreate(
-            ['name_id' => $data['name'] ?? null],
+            ['timesheet_id' => $timesheet['name']],
             [
-                'employee_id' => $data['employee'] ?? null,
-                'employee_name' => $data['employee_name'] ?? null,
-                'email' => $data['owner'] ?? null,
-                'company' => $data['company'] ?? null,
-                'start_date' => $data['start_date'] ?? null,
-                'end_date' => $data['end_date'] ?? null,
-                'total_hours' => $data['total_hours'] ?? 0,
-                'total_billable_hours' => $data['total_billable_hours'] ?? 0,
+                'employee_id' => $timesheet['employee'],
+                'start_date' => $timesheet['start_date'],
+                'end_date' => $timesheet['end_date'],
+                'total_hours' => $timesheet['total_hours'],
+                'total_billable_hours' => $timesheet['total_billable_hours'],
                 // Menghitung total tagihan dari log waktu terkait
-                'total_billable_amount' => TimeLog::where('timesheet_name_id', $data['name'])->sum('billing_amount'),
-                'status' => $data['status'] ?? null,
-                'note' => $data['note'] ?? null,
-                'created_at' => $data['creation'] ?? now(),
-                'updated_at' => $data['modified'] ?? now(),
+                'total_billable_amount' => TimeLog::where('timesheet_id', $timesheet['name'])->sum('billing_amount'),
+                'status' => $timesheet['status'],
+                'note' => $timesheet['note'],
+                'created_at' => $timesheet['creation'] ?? now(),
+                'updated_at' => $timesheet['modified'] ?? now(),
             ]
         );
     }
@@ -103,7 +122,7 @@ class TimesheetApiController extends Controller
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', $this->apiUrl, [
             'headers' => [
-                'Authorization' => 'token ' . env('API_TOKEN'), // Token otorisasi
+                'Authorization' => env('API_TOKEN'),
             ]
         ]);
 
@@ -130,7 +149,7 @@ class TimesheetApiController extends Controller
      */
     public function destroy(string $timesheet)
     {
-        Timesheet::where('name_id', $timesheet)->delete();
+        Timesheet::where('timesheet_id', $timesheet)->delete();
         return response()->json(['message' => 'Timesheet deleted']);
     }
 }

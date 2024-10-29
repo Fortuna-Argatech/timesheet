@@ -8,7 +8,7 @@ class TimesheetController extends Controller
 {
     public function index()
     {
-        $timesheets = Timesheet::orderBy('created_at', 'desc')->get();
+        $timesheets = Timesheet::with('employee')->orderBy('created_at', 'desc')->get();
         return view('pages.timesheet.index', compact('timesheets'));
     }
 }

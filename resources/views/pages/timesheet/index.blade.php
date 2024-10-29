@@ -11,18 +11,16 @@
     ];
 @endphp
 <x-layout>
-    <x-slot name="title">Data Timesheet</x-slot>
+    <x-slot name="title">Timesheet Data</x-slot>
 
     <div class="relative w-full bg-white rounded-md shadow dark:bg-slate-800">
         <div
             class="flex items-center justify-between px-4 py-3 border-b border-dashed border-slate-200 dark:border-slate-700 dark:text-slate-300/70">
-            <h4 class="w-full font-medium">Data Timesheet</h4>
+            <h4 class="w-full font-medium">Timesheet Data</h4>
             <form method="POST" class="flex items-center w-full gap-4 py-4" id="createData">
                 @csrf
-                <select name="timesheet_id" id="timesheetSelect"
-                    class="px-3 py-1 mt-1 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700">
+                <select name="timesheet_id" id="timesheetSelect" class="w-full px-3 py-1 mt-1 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700">
                     <option selected disabled>Select Timesheet First</option>
-                    {{-- Option --}}
                 </select>
                 <div class="flex items-center gap-4">
                     <button type="submit"
@@ -84,41 +82,41 @@
                         <tbody>
                             @forelse ($timesheets as $timesheet)
                                 <tr class="bg-white border-b border-dashed dark:bg-gray-800 dark:border-gray-700">
-                                    <td class="p-3 text-sm font-medium whitespace-nowrap dark:text-white">
-                                        {{ $timesheet->name_id }}
+                                    <td class="p-3 text-sm font-medium dark:text-white">
+                                        {{ $timesheet->timesheet_id }}
                                     </td>
-                                    <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
                                         {{ $timesheet->employee_id }}
                                     </td>
-                                    <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
-                                        {{ $timesheet->employee_name }}
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $timesheet->employee->name }}
                                     </td>
-                                    <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
-                                        {{ $timesheet->email }}
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $timesheet->employee->email }}
                                     </td>
-                                    <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
-                                        {{ $timesheet->company }}
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $timesheet->employee->company }}
                                     </td>
-                                    <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
                                         @php
                                         $statusClass = $badges[$timesheet->status] ?? 'bg-gray-500/10 text-gray-500';
                                         @endphp
                                         <span class="{{ $statusClass }} text-[11px] font-medium px-2.5 py-0.5 rounded h-5">{{ $timesheet->status }}</span>
                                     </td>
-                                    <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
                                         {{ $timesheet->total_hours }}
                                     </td>
-                                    <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
                                         {{ $timesheet->formatted_billable_amount }}
                                     </td>
-                                    <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
                                         {!! $timesheet->note !!}
                                     </td>
-                                    <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
-                                        <a href="{{ route('timesheet.timelogs.index', $timesheet->name_id) }}">
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
+                                        <a href="{{ route('timesheet.timelogs.index', $timesheet->timesheet_id) }}">
                                             <i class="text-lg text-gray-500 fas fa-eye dark:text-gray-400"></i>
                                         </a>
-                                        <button type="button" class="btn-delete" data-name="{{ $timesheet->name_id }}">
+                                        <button type="button" class="btn-delete" data-name="{{ $timesheet->timesheet_id }}">
                                             <i class="text-lg text-red-500 ti ti-trash dark:text-red-400"></i>
                                         </button>
                                     </td>
@@ -126,6 +124,8 @@
                             @empty
                             @endforelse
                         </tbody>
+                        <tfoot>
+                        </tfoot>
                     </table>
                 </div>
             </div>

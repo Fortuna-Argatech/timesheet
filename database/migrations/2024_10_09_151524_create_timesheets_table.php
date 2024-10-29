@@ -13,11 +13,8 @@ return new class extends Migration
     {
         Schema::create('timesheets', function (Blueprint $table) {
             $table->id();
-            $table->string('name_id')->unique();
-            $table->string('employee_id')->unique();
-            $table->string('employee_name');
-            $table->string('email')->unique();
-            $table->string('company');
+            $table->string('timesheet_id')->unique();
+            $table->string('employee_id');
             $table->date('start_date');
             $table->date('end_date');
             $table->decimal('total_hours', 20, 2);
@@ -29,6 +26,8 @@ return new class extends Migration
             $table->string('status');
             $table->text('note')->nullable();
             $table->timestamps();
+
+            $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
         });
     }
 
