@@ -78,7 +78,7 @@
                             </li>
 
                             <li class="relative block nav-item">
-                                <a href="#"
+                                <a href="{{ route('dashboard.index') }}"
                                     class="nav-link hover:bg-gray-50 hover:text-primary-500 dark:hover:bg-gray-800/20 rounded-md dark:hover:text-primary-500 relative font-medium text-sm flex items-center h-[38px] decoration-0 px-2 py-4">
                                     Dashboard
                                 </a>
@@ -91,15 +91,21 @@
                         </div>
                         <ul class="flex flex-col flex-wrap pl-0 mb-0 nav">
                             <li class="relative block nav-item">
-                                <a href="{{ route('timesheet.index') }}"
+                                <a href="{{ route('timesheetGet.index') }}"
                                     class="nav-link hover:bg-gray-50 hover:text-primary-500 dark:hover:bg-gray-800/20 rounded-md dark:hover:text-primary-500 relative font-medium text-sm flex items-center h-[38px] decoration-0 px-2 py-4">
                                     Timesheet
                                 </a>
                             </li>
                             <li class="relative block nav-item">
-                                <a href="{{ route('activity-type.index') }}"
+                                <a href="{{ route('activityTypeGet.index') }}"
                                     class="nav-link hover:bg-gray-50 hover:text-primary-500 dark:hover:bg-gray-800/20 rounded-md dark:hover:text-primary-500 relative font-medium text-sm flex items-center h-[38px] decoration-0 px-2 py-4">
                                     Activity Type
+                                </a>
+                            </li>
+                            <li class="relative block nav-item">
+                                <a href="{{ route('employeeGet.index') }}"
+                                    class="nav-link hover:bg-gray-50 hover:text-primary-500 dark:hover:bg-gray-800/20 rounded-md dark:hover:text-primary-500 relative font-medium text-sm flex items-center h-[38px] decoration-0 px-2 py-4">
+                                    Employee
                                 </a>
                             </li>
                             {{-- <li>
