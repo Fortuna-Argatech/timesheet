@@ -15,8 +15,9 @@ class TimeLogController extends Controller
         $timeLogsByTimeSheet = Timesheet::with(['timeLogs' => function ($query) {
             $query->orderBy('id', 'asc');
         }, 'timeLogs.activityType'])
-            ->where('name_id', $timesheet)
+            ->where('timesheet_id', $timesheet)
             ->get();
+
         $activityType = ActivityType::all();
         return view('pages.timesheet.timelogs.index', compact('timeLogsByTimeSheet', 'activityType'));
     }

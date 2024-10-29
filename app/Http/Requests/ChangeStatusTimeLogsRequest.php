@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateTimeLogRequest extends FormRequest
+class ChangeStatusTimeLogsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,7 @@ class UpdateTimeLogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'activity_type' => ['required', 'string'],
-            // 'from_time' => ['required', 'date_format:Y-m-d\TH:i'],
-            // 'to_time' => ['required', 'date_format:Y-m-d\TH:i', 'after:from_time'],
-            'hours' => ['required', 'numeric'],
-            'billing_amount' => ['required', 'numeric'],
+            'status' => ['required'],
         ];
     }
 }

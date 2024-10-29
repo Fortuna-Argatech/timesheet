@@ -15,6 +15,9 @@
 
     <div class="relative w-full bg-white rounded-md shadow dark:bg-slate-800">
         <div class="px-4 py-3 border-b border-dashed border-slate-200 dark:border-slate-700 dark:text-slate-300/70">
+            <a href="{{ route('timesheetGet.index') }}"
+                class="flex items-center gap-2 px-3 py-2 mb-2 mr-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded max-w-fit focus:outline-none hover:bg-gray-100 hover:text-blue-700 focus:z-10 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"><i
+                    class="text-2xl ti ti-arrow-back"></i><span>Back</span></a>
             <h4 class="font-medium">Timelog data by Timesheet</h4>
         </div>
         <div class="grid grid-cols-1 p-4">
@@ -57,6 +60,10 @@
                                 </th>
                                 <th scope="col"
                                     class="p-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                    Status
+                                </th>
+                                <th scope="col"
+                                    class="p-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
                                     Actions
                                 </th>
                             </tr>
@@ -66,10 +73,10 @@
                                 @foreach ($timesheet->timeLogs as $timelog)
                                     <tr class="bg-white border-b border-dashed dark:bg-gray-800 dark:border-gray-700">
                                         <td class="p-3 text-sm font-medium whitespace-nowrap dark:text-white">
-                                            {{ $timelog->timesheet_name_id }}
+                                            {{ $timelog->timesheet_id }}
                                         </td>
                                         <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
-                                            {{ $timesheet->employee_name }}
+                                            {{ $timesheet->employee->name }}
                                         </td>
                                         <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                                             {{ $timelog->activityType->name }}</td>
@@ -89,8 +96,15 @@
                                             {{ $timelog->formatted_amount }}
                                         </td>
                                         <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                            <button type="button" data-id="{{ $timelog->id }}" data-status="{{ $timelog->status }}"
+                                                class="btn-status {{ $timelog->status === 'draft' ? 'bg-gray-600/5 text-gray-600' : 'bg-indigo-600/5 text-indigo-600' }} text-[11px] font-medium px-2.5 py-0.5 rounded h-5 tippy-btn"
+                                                data-tippy-content="Click to change status" data-tippy-arrow="false"
+                                                data-tippy-interactive="true">{{ $timelog->status }}
+                                            </button>
+                                        </td>
+                                        <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                                             <a href="#modalcenter" data-modal-toggle="modal"
-                                                data-id="{{ $timelog->id }}" class="btn-edit">
+                                                data-id="{{ $timelog->id }}" data-status="{{ $timelog->status }}" class="btn-edit">
                                                 <i class="text-lg text-blue-500 ti ti-edit dark:text-blue-400"></i>
                                             </a>
                                             <button type="button" class="btn-delete" data-id="{{ $timelog->id }}">
@@ -101,6 +115,19 @@
                                 @endforeach
                             @endforeach
                         </tbody>
+                        <tfoot class="border-b">
+                            <tr>
+                                <th scope="col" colspan="5"
+                                    class="p-3 text-xs font-bold tracking-wider text-gray-700 uppercase dark:text-gray-400">
+                                    Total</th>
+                                <td class="p-3 text-sm font-bold text-gray-700 whitespace-nowrap dark:text-gray-400">
+                                    {{ $timelog->timesheet->total_hours ?? 0 }}</td>
+                                <td class="p-3 text-sm font-bold text-gray-700 whitespace-nowrap dark:text-gray-400">
+                                    {{ $timelog->Formatted_sum_rate ?? 0 }}</td>
+                                <td class="p-3 text-sm font-bold text-gray-700 whitespace-nowrap dark:text-gray-400">
+                                    {{ $timelog->timesheet->formatted_billable_amount ?? 0 }}</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -124,9 +151,6 @@
                 <div class="relative flex-auto p-4 leading-relaxed text-slate-600 dark:text-gray-300">
                     <form method="POST" id="formSubmit">
                         @csrf
-                        {{-- Parsing name for edit timelog --}}
-                        <input type="hidden" name="id" id="id" value="">
-                        <input type="hidden" name="employee_id" id="employee_id" value="">
                         <div class="mb-2">
                             <label for="timesheet" class="text-sm font-medium text-slate-600 dark:text-slate-400">ID
                                 Timesheet</label>
@@ -145,15 +169,9 @@
                             </select>
                         </div>
                         <div class="mb-2">
-                            <label for="from-time" class="text-sm font-medium text-slate-600 dark:text-slate-400">From
-                                Time</label>
-                            <input type="datetime-local" id="from-time" value=""
-                                class="w-full px-3 py-1 mt-1 mb-4 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700">
-                        </div>
-                        <div class="mb-2">
-                            <label for="to-time" class="text-sm font-medium text-slate-600 dark:text-slate-400">To
-                                Time</label>
-                            <input type="datetime-local" id="to-time"
+                            <label for="hours"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Hours</label>
+                            <input type="number" id="hours" name="hours" value=""
                                 class="w-full px-3 py-1 mt-1 mb-4 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700">
                         </div>
                         <div
@@ -175,6 +193,8 @@
         <script src="{{ asset('assets/libs/simple-datatables/umd/simple-datatables.js') }}"></script>
         <script src="{{ asset('assets/js/pages/datatable.init.js') }}"></script>
         <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/tippy.js/tippy.all.min.js') }}"></script>
+        <script src="{{ asset('assets/js/pages/tooltip-popover.init.js') }}"></script>
         @vite('resources/js/pages/time-log.js')
     @endpush
 
