@@ -18,16 +18,21 @@ class ActivityTypeApiController extends Controller
             ['rate' => 0]
         );
     }
+    public function getRateForActivity($activityType)
+    {
+        $rate = ActivityType::where('name', $activityType)->value('rate');
+        return $rate ?? 0;
+    }
+
     public function index()
     {
         $activityTypes = ActivityType::all();
-        return response()->json(
-            [
-                'status' => 'success',
-                'data' => $activityTypes
-            ],
-            200
-        );
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'data' => $activityTypes
+        ], 200);
     }
     public function store(StoreActivityTypeRequest $request)
     {
@@ -50,23 +55,29 @@ class ActivityTypeApiController extends Controller
         if ($request->rate != $oldRate) {
             $activityType->rate = $request->rate;
             $activityType->save();
-            $timeLogs = TimeLog::where('activity_type', $activityType->name)->get();
+
+            $timeLogs = TimeLog::where('activity_type', $activityType->name)
+                ->where('status', '!=', 'fixed') // Hindari logs dengan status 'fixed'
+                ->get();
             // Update billing rate dan billing amount pada time logs yang terkait
             foreach ($timeLogs as $timeLog) {
-                $newBillingAmount = (new EmployeeApiController)->calculateEmployeeRate($timeLog->employee_id, $request->rate) * $timeLog->hours;
-                $timeLog->billing_rate = (new EmployeeApiController)->calculateEmployeeRate($timeLog->employee_id, $request->rate);
+                $newBillingAmount = (new EmployeeApiController)->calculateEmployeeRate($timeLog->timesheet->employee_id, $request->rate) * $timeLog->hours;
+                $timeLog->billing_rate = (new EmployeeApiController)->calculateEmployeeRate($timeLog->timesheet->employee_id, $request->rate);
                 $timeLog->billing_amount = $newBillingAmount;
                 $timeLog->save();
             }
-            $relatedTimesheets = Timesheet::whereIn('name_id', $timeLogs->pluck('timesheet_name_id'))->get();
+
+            $timesheetIds = $timeLogs->pluck('timesheet_id')->first();
+            $relatedTimesheets = Timesheet::where('timesheet_id', $timesheetIds)->get();
             // Update total billable amount pada timesheets yang terkait
             foreach ($relatedTimesheets as $timesheet) {
-                $totalBillableAmount = TimeLog::where('timesheet_name_id', $timesheet->name_id)->sum('billing_amount');
+                $totalBillableAmount = TimeLog::where('timesheet_id', $timesheet->timesheet_id)->sum('billing_amount');
                 $timesheet->total_billable_amount = $totalBillableAmount;
                 $timesheet->save();
             }
             return response()->json([
-                "success" => true,
+                'status' => 200,
+                'success' => true,
                 'message' => 'Activity type rate, related time logs, and timesheets updated successfully.',
                 'updated_activity_type' => $activityType,
                 'updated_time_logs' => $timeLogs->count(),
@@ -74,14 +85,18 @@ class ActivityTypeApiController extends Controller
             ], 200);
         }
         return response()->json([
+            'status' => 200,
+            'success' => true,
             'message' => 'No changes detected in the activity type rate.',
+            'activity_type' => $activityType
         ], 200);
     }
     public function destroy(ActivityType $activityType)
     {
         $activityType->delete();
         return response()->json([
-            'status' => 'success',
+            'status' => 200,
+            'success' => true,
             'message' => 'Activity type deleted'
         ], 200);
     }

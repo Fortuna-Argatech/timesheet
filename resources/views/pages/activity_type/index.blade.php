@@ -60,6 +60,8 @@
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -77,24 +79,27 @@
                     <h6 class="mt-0 mb-0 text-base font-semibold leading-4 text-slate-300" id="staticBackdropLabel1">
                         Create Data Activity Type</h6>
                     <button type="button"
-                        class="box-content w-4 h-4 p-1 text-xl leading-4 rounded-full bg-slate-700/60 text-slate-300 close"
+                        class="box-content w-4 h-4 p-1 text-xl leading-4 rounded-full bg-slate-700/60 text-slate-300 close btn-close"
                         aria-label="Close">&times;</button>
                 </div>
                 <div class="relative flex-auto p-4 leading-relaxed text-slate-600 dark:text-gray-300">
                     <form method="post" id="formSubmit">
                         @csrf
-                        <input type="hidden" name="activity_type_id" id="activity_type_id" value="">
-                        <div class="mb-2">
-                            <label for="name" class="text-sm font-medium text-slate-600 dark:text-slate-400">Name</label>
-                            <input type="text" id="name" name="name" value="" class="@error('name') error @enderror w-full px-3 py-1 mt-1 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700"
+                        <div class="mb-2" id="create-or-update">
+                            <label for="name"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Name</label>
+                            <input type="text" id="name" name="name" value=""
+                                class="@error('name') error @enderror w-full px-3 py-1 mt-1 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700"
                                 placeholder="ex: Lembur Hari Kerja" required>
                             @error('name')
                                 <small class="text-red-500">{{ $message }}</small>
                             @enderror
                         </div>
                         <div class="mb-2">
-                            <label for="rate" class="text-sm font-medium text-slate-600 dark:text-slate-400">Rate</label>
-                            <input type="number" id="rate" name="rate" value="" placeholder="ex: 200000" class="@error('rate') error @enderror w-full px-3 py-1 mt-1 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700"
+                            <label for="rate"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Rate</label>
+                            <input type="number" id="rate" name="rate" value="" placeholder="ex: 200000"
+                                class="@error('rate') error @enderror w-full px-3 py-1 mt-1 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700"
                                 required>
                             @error('rate')
                                 <small class="text-red-500">{{ $message }}</small>

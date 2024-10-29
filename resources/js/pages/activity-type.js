@@ -13,8 +13,8 @@ function initActivityTypeCRUD() {
 
 function handleFormSubmit(e) {
     e.preventDefault();
-    let id = $('#activity_type_id').val();
-    let url = id ? 'api/activity-types/' + id : 'api/activity-types/';
+    let id = $('#formSubmit').data('id');
+    let url = id ? `api/activity-types/${id}` : 'api/activity-types/';
     let method = id ? 'PUT' : 'POST';
     let message = id ? 'updated' : 'created';
 
@@ -47,13 +47,15 @@ function handleFormSubmit(e) {
 }
 
 function handleEditClick() {
-    let id = $(this).data('id');
+    const id = $(this).data('id');
     $.get('/api/activity-types/' + id, function (data) {
         $('#activity_type_id').val(data.id);
         $('#name').val(data.name);
         $('#rate').val(data.rate);
         $('#modalcenter').addClass('block');
     });
+
+    $('#formSubmit').data('id', id);
 }
 
 function clearFormFields() {
