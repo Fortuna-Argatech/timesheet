@@ -7,6 +7,7 @@
 const dataTable = new simpleDatatables.DataTable("#datatable_1", {
     searchable: true,
     fixedHeight: false,
+    footer: true,
 })
 
 // const dataTable_2 = new simpleDatatables.DataTable("#datatable_2")
