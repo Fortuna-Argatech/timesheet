@@ -50,17 +50,15 @@
                                         {{ $employee->rate_percentage }}%
                                     </td>
                                     <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
-                                        <a href="#modalcenter" data-modal-toggle="modal" data-id="{{ $employee->id }}"
-                                            class="btn-edit">
+                                        <a href="#modalcenter" data-modal-toggle="modal"
+                                            data-id="{{ $employee->id }}" class="btn-edit">
                                             <i class="text-lg text-blue-500 ti ti-edit dark:text-blue-400"></i>
                                         </a>
-                                        <button type="button" class="btn-delete" data-id="{{ $employee->id }}">
-                                            <i class="text-lg text-red-500 ti ti-trash dark:text-red-400"></i>
-                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot></tfoot>
                     </table>
                 </div>
             </div>
@@ -83,29 +81,33 @@
                 <div class="relative flex-auto p-4 leading-relaxed text-slate-600 dark:text-gray-300">
                     <form method="post" id="formSubmit">
                         @csrf
-                        <input type="hidden" name="id" id="id" value="">
                         <div class="mb-2">
-                            <label for="employee_id" class="text-sm font-medium text-slate-600 dark:text-slate-400">Employee ID</label>
-                            <input type="text" id="employee_id" value=""
+                            <label for="employee"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Employee ID</label>
+                            <input type="text" id="employee"
                                 class="w-full px-3 py-1 mt-1 mb-4 bg-transparent border rounded-md cursor-not-allowed form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700"
-                                value="" disabled>
+                                disabled>
                         </div>
                         <div class="mb-2">
-                            <label for="name" class="text-sm font-medium text-slate-600 dark:text-slate-400">Name</label>
-                            <input type="text" id="name" value=""
+                            <label for="name"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Name</label>
+                            <input type="text" id="name"
                                 class="w-full px-3 py-1 mt-1 mb-4 bg-transparent border rounded-md cursor-not-allowed form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700"
-                                value="" disabled>
+                                disabled>
                         </div>
                         <div class="mb-2">
-                            <label for="email" class="text-sm font-medium text-slate-600 dark:text-slate-400">email</label>
-                            <input type="text" id="email" value=""
+                            <label for="email"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">email</label>
+                            <input type="text" id="email"
                                 class="w-full px-3 py-1 mt-1 mb-4 bg-transparent border rounded-md cursor-not-allowed form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700"
-                                value="" disabled>
+                                disabled>
                         </div>
                         <div class="mb-2">
-                            <label for="precentage" class="text-sm font-medium text-slate-600 dark:text-slate-400">Rate</label>
-                            <input type="range" name="precentage" id="precentage" value="" min="1" max="100" class="w-full" oninput="this.nextElementSibling.value = this.value + '%'">
-                            <output>%</output>
+                            <label for="precentage"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Rate</label>
+                            <input type="range" name="precentage" id="precentage" min="1" max="100"
+                                class="w-full" oninput="this.nextElementSibling.value = this.value + '%'">
+                            <output id="output">%</output>
                         </div>
                         <div
                             class="flex flex-wrap justify-end p-3 border-t border-dashed rounded-b shrink-0 dark:border-gray-700">

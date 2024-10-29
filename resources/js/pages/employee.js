@@ -7,15 +7,13 @@ $(document).ready(function () {
 function initActivityTypeCRUD() {
     $('#formSubmit').on('submit', handleFormSubmit);
     $('.btn-edit').on('click', handleEditClick);
-    $('.btn-delete').on('click', handleDeleteClick);
     $('.btn-close').on('click', clearFormFields);
 }
 
 function handleFormSubmit(e) {
     e.preventDefault();
-    let id = $('#id').val();
-    let employeeId = $('#employee_id').val();
-    let url = 'api/employee/' + id;
+    let id = $(this).data('id');
+    let url = `api/employee/${id}`;
     let method = 'PUT';
     let message = 'updated';
 
@@ -48,45 +46,28 @@ function handleFormSubmit(e) {
 
 function handleEditClick() {
     let id = $(this).data('id');
-    $.get('/api/employee/' + id, function (data) {
-        console.log(data);
-        $('#id').val(data.id);
-        $('#employee_id').val(data.employee_id);
-        $('#name').val(data.name);
-        $('#email').val(data.email);
-        $('#precentage').val(data.rate_percentage);
-        $('#precentage').next('output').text(data.rate_percentage + "%");
-        $('#modalcenter').addClass('block');
+    $.ajax({
+        url: `/api/employee/${id}`,
+        method: 'GET',
+        success: function (response, textStatus, xhr) {
+            $('#employee').val(response.data.employee_id);
+            $('#name').val(response.data.name);
+            $('#email').val(response.data.email);
+            $('#precentage').val(response.data.rate_percentage);
+            $('#output').text(response.data.rate_percentage + '%');
+            $('#modalcenter').addClass('block');
+        },
+        error: function (response, textStatus, xhr) {
+            executeExample(textStatus, response.responseJSON.message);
+        }
     });
+
+    $('#formSubmit').data('id', id);
 }
 
 function clearFormFields() {
-    $('#employee_id').val('');
-    $('#precentage').val('');
+    $('#employee').val('');
+    $('#name').val('');
+    $('#email').val('');
+    $('#percentage').val('');
 }
-
-// function handleDeleteClick() {
-//     var id = $(this).data('id');
-//     executeExample('warningConfirm').then(function (result) {
-//         if (result.isConfirmed) {
-//             $.ajax({
-//                 url: '/api/employee/' + id,
-//                 type: 'DELETE',
-//                 data: {
-//                     _token: $('meta[name="csrf-token"]').attr('content'),
-//                 },
-//                 success: function (response) {
-//                     console.log(response);
-//                     if (response.status === 'success') {
-//                         executeExample('success', 'deleted').then(() => {
-//                             $('#formSubmit')[0].reset();
-//                             location.reload();
-//                         });
-//                     } else {
-//                         executeExample('error')
-//                     }
-//                 }
-//             });
-//         }
-//     });
-// }

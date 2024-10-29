@@ -22,7 +22,7 @@ class StoreEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_id' => ['required', 'string', 'unique:employees'],
+            'employee_id' => ['required', 'string',],
             'employee_name' => ['required', 'string'],
             'owner' => ['required', 'numeric', 'between:0,100']
         ];
