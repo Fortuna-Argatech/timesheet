@@ -101,7 +101,10 @@ class ActivityTypeSeeder extends Seeder
         ];
 
         foreach ($data as $activityType) {
-            ActivityType::create($activityType);
+            ActivityType::updateOrCreate(
+                ['name' => $activityType['name']],
+                ['rate' => $activityType['rate']]
+            );
         }
     }
 }

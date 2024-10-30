@@ -56,11 +56,13 @@ class ActivityTypeApiController extends Controller
             $activityType->rate = $request->rate;
             $activityType->save();
 
-            $timeLogs = TimeLog::where('activity_type', $activityType->name)
-                ->where('status', '!=', 'fixed') // Hindari logs dengan status 'fixed'
-                ->get();
+            $timeLogs = TimeLog::where('activity_type', $activityType->name)->get();
+
             // Update billing rate dan billing amount pada time logs yang terkait
             foreach ($timeLogs as $timeLog) {
+                if ($timeLog->timesheet->padlock === 'locked') {
+                    continue;
+                }
                 $newBillingAmount = (new EmployeeApiController)->calculateEmployeeRate($timeLog->timesheet->employee_id, $request->rate) * $timeLog->hours;
                 $timeLog->billing_rate = (new EmployeeApiController)->calculateEmployeeRate($timeLog->timesheet->employee_id, $request->rate);
                 $timeLog->billing_amount = $newBillingAmount;

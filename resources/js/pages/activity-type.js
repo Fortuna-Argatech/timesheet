@@ -6,8 +6,8 @@ $(document).ready(function () {
 
 function initActivityTypeCRUD() {
     $('#formSubmit').on('submit', handleFormSubmit);
-    $('.btn-edit').on('click', handleEditClick);
-    $('.btn-delete').on('click', handleDeleteClick);
+    $('#datatable_1').on('click', '.btn-edit', handleEditClick);
+    $('#datatable_1').on('click', '.btn-delete', handleDeleteClick);
     $('.btn-close').on('click', clearFormFields);
 }
 
