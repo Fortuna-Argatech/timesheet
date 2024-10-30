@@ -28,10 +28,6 @@ class TimeLogApiController extends Controller
             });
 
             if ($existingLog) {
-                if ($existingLog->status === 'fixed') {
-                    $logIdsToKeep[] = $existingLog->id;
-                    continue; // Skip log yang sudah fixed agar tidak di-update
-                }
                 // Jika log sudah ada, tambahkan ID-nya ke daftar untuk dipertahankan
                 $logIdsToKeep[] = $existingLog->id;
             } else {
@@ -63,7 +59,6 @@ class TimeLogApiController extends Controller
         // Hapus logs yang tidak ada di daftar terbaru
         TimeLog::where('timesheet_id', $timesheet->timesheet_id)
             ->whereNotIn('id', $logIdsToKeep)
-            ->where('status', '!=', 'fixed') // Jangan hapus log yang statusnya 'fixed'
             ->delete();
 
         // Update total hours dan amount pada timesheet
@@ -88,12 +83,12 @@ class TimeLogApiController extends Controller
     }
     public function update(UpdateTimeLogRequest $request, TimeLog $timeLog)
     {
-        // Cek apakah status 'fixed', jika ya, tolak update
-        if ($timeLog->status === 'fixed') {
+        // Cek apakah status 'locked', jika ya, tolak update
+        if ($timeLog->timesheet->padlock === 'locked') {
             return response()->json([
                 'status' => 403,
                 'success' => false,
-                'message' => 'This time log is fixed and cannot be updated or deleted.'
+                'message' => 'This time log is locked and cannot be updated or deleted.'
             ], 403);
         }
         $activity = (new ActivityTypeApiController)->findOrCreateActivity($request->activity_type);
@@ -125,24 +120,13 @@ class TimeLogApiController extends Controller
         ], 200);
     }
 
-    public function changeStatus(ChangeStatusTimeLogsRequest $request, TimeLog $timeLog)
-    {
-        $status = $request->status == 'fixed' ? 'draft' : 'fixed';
-        $timeLog->update(['status' => $status]);
-
-        return response()->json([
-            'status' => 200,
-            'success' => true,
-            'message' => 'Time log status change: ' . $timeLog->status
-        ], 200);
-    }
     public function destroy(TimeLog $timeLog)
     {
-        if ($timeLog->status === 'fixed') {
+        if ($timeLog->timesheet->padlock === 'locked') {
             return response()->json([
                 'status' => 403,
                 'success' => false,
-                'message' => 'Fixed time logs cannot be deleted.'
+                'message' => 'Locked timesheet cannot be deleted.'
             ], 403);
         }
 

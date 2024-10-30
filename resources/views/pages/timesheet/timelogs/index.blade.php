@@ -60,10 +60,6 @@
                                 </th>
                                 <th scope="col"
                                     class="p-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                    Status
-                                </th>
-                                <th scope="col"
-                                    class="p-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
                                     Actions
                                 </th>
                             </tr>
@@ -96,18 +92,11 @@
                                             {{ $timelog->formatted_amount }}
                                         </td>
                                         <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
-                                            <button type="button" data-id="{{ $timelog->id }}" data-status="{{ $timelog->status }}"
-                                                class="btn-status {{ $timelog->status === 'draft' ? 'bg-gray-600/5 text-gray-600' : 'bg-indigo-600/5 text-indigo-600' }} text-[11px] font-medium px-2.5 py-0.5 rounded h-5 tippy-btn"
-                                                data-tippy-content="Click to change status" data-tippy-arrow="false"
-                                                data-tippy-interactive="true">{{ $timelog->status }}
-                                            </button>
-                                        </td>
-                                        <td class="p-3 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                                             <a href="#modalcenter" data-modal-toggle="modal"
-                                                data-id="{{ $timelog->id }}" data-status="{{ $timelog->status }}" class="btn-edit">
+                                                data-id="{{ $timelog->id }}" data-padlock="{{ $timelog->timesheet->padlock }}" class="btn-edit">
                                                 <i class="text-lg text-blue-500 ti ti-edit dark:text-blue-400"></i>
                                             </a>
-                                            <button type="button" class="btn-delete" data-id="{{ $timelog->id }}">
+                                            <button type="button" class="btn-delete" data-id="{{ $timelog->id }}" data-padlock="{{ $timelog->timesheet->padlock }}">
                                                 <i class="text-lg text-red-500 ti ti-trash dark:text-red-400"></i>
                                             </button>
                                         </td>
@@ -122,8 +111,7 @@
                                     Total</th>
                                 <td class="p-3 text-sm font-bold text-gray-700 whitespace-nowrap dark:text-gray-400">
                                     {{ $timelog->timesheet->total_hours ?? 0 }}</td>
-                                <td class="p-3 text-sm font-bold text-gray-700 whitespace-nowrap dark:text-gray-400">
-                                    {{ $timelog->Formatted_sum_rate ?? 0 }}</td>
+                                <td class="p-3 text-sm font-bold text-gray-700 whitespace-nowrap dark:text-gray-400"></td>
                                 <td class="p-3 text-sm font-bold text-gray-700 whitespace-nowrap dark:text-gray-400">
                                     {{ $timelog->timesheet->formatted_billable_amount ?? 0 }}</td>
                             </tr>
@@ -193,8 +181,6 @@
         <script src="{{ asset('assets/libs/simple-datatables/umd/simple-datatables.js') }}"></script>
         <script src="{{ asset('assets/js/pages/datatable.init.js') }}"></script>
         <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/tippy.js/tippy.all.min.js') }}"></script>
-        <script src="{{ asset('assets/js/pages/tooltip-popover.init.js') }}"></script>
         @vite('resources/js/pages/time-log.js')
     @endpush
 

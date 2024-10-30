@@ -8,8 +8,8 @@ $(document).ready(function () {
 
 function initTimeLogsCRUD() {
     $('#formSubmit').on('submit', handleFormSubmit);
-    $('.btn-edit').on('click', handleEditClick);
-    $('.btn-delete').on('click', handleDeleteClick);
+    $('#datatable_1').on('click', '.btn-edit', handleEditClick);
+    $('#datatable_1').on('click', '.btn-delete', handleDeleteClick);
     $('.btn-close').on('click', clearFormFields);
     $('.btn-status').on('click', changeStatus);
 }
@@ -64,10 +64,10 @@ function handleFormSubmit(e) {
 }
 function handleEditClick() {
     let id = $(this).data('id');
-    const status = $(this).data('status');
+    const padlock = $(this).data('padlock');
 
-    if (status === 'fixed') {
-        executeExample('error', 'You cannot edit fixed time logs');
+    if (padlock === 'locked') {
+        executeExample('error', 'You cannot edit locked time logs');
         return;
     }
 
@@ -95,6 +95,13 @@ function clearFormFields() {
 }
 function handleDeleteClick() {
     let id = $(this).data('id');
+    const padlock = $(this).data('padlock');
+
+    if (padlock === 'locked') {
+        executeExample('error', 'You cannot delete locked time logs');
+        return;
+    }
+
     executeExample('warningConfirm').then(function (result) {
         if (result.isConfirmed) {
             $.ajax({
