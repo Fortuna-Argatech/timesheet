@@ -14,7 +14,8 @@ Sistem manajemen timesheet ini memungkinkan sinkronisasi data dari API eksternal
 - Edit dan Delete **Time Logs**.
 - Create, Read, Update, Delete **Activity Type**
 - View dan Update **Employee** (Baru)
-- Penambahan fitur "status" pada timelogs yaitu "fixed" dan "draft"
+- ~~Penambahan fitur "status" pada timelogs yaitu "fixed" dan "draft"~~
+- Penambahan fitur **padlock** pada timesheet yaitu "unlocked" dan "locked"
 - **Sinkronisasi API** dengan sistem ERP eksternal.
 - **Validasi input** dengan masing-masing Request.
 - **AJAX** untuk operasi tanpa reload halaman.
@@ -35,8 +36,8 @@ Sistem manajemen timesheet ini memungkinkan sinkronisasi data dari API eksternal
  
  2. Install dependencies:
  ```
- composer install npm
- install && npm run build
+ composer install 
+ npm install && npm run build
  ```
  
  3. Setup environment variables: Salin file `.env.example` menjadi `.env` dan sesuaikan konfigurasi:
