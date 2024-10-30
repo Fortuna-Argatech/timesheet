@@ -7,6 +7,7 @@ $(document).ready(function () {
 function initActivityTypeCRUD() {
     $('#formSubmit').on('submit', handleFormSubmit);
     $('.btn-edit').on('click', handleEditClick);
+    $('#datatable_1').on('click', '.btn-edit', handleEditClick);
     $('.btn-close').on('click', clearFormFields);
 }
 

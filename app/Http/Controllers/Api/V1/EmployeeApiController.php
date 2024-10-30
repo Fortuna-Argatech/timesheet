@@ -66,7 +66,7 @@ class EmployeeApiController extends Controller
 
             foreach ($timesheet as $timesheets) {
                 foreach ($timesheets->timeLogs as $timeLog) {
-                    if ($timeLog->status === 'fixed') {
+                    if ($timeLog->timesheet->padlock === 'locked') {
                         continue;
                     }
                     $activityTypes = ActivityType::where('name', $timeLog->activity_type)->first();
