@@ -17,4 +17,4 @@ Route::delete('/timesheet/{timesheet}', [TimesheetApiController::class, 'destroy
 Route::apiResource('activity-types', ActivityTypeApiController::class);
 Route::apiResource('time-logs', TimeLogApiController::class);
 Route::apiResource('employee', EmployeeApiController::class);
-Route::put('/time-logs/change-status/{time_log}', [TimeLogApiController::class, 'changeStatus'])->name('time-logs.change-status');
+Route::put('/timesheet/change-padlock/{timesheet}', [TimesheetApiController::class, 'changePadlock'])->name('timesheet.change-padlock');
