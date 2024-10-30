@@ -23,6 +23,7 @@ class Timesheet extends Model
         'total_billed_amount',
         'per_billed',
         'status',
+        'padlock',
         'note'
     ];
 

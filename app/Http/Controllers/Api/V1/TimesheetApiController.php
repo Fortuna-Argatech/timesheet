@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exceptions\TimesheetLockedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTimesheetRequest;
 use App\Models\TimeLog;
@@ -10,7 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\V1\TimeLogApiController;
+use App\Http\Requests\ChangePadlockTimesheetRequest;
 use Exception;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TimesheetApiController extends Controller
 {
@@ -25,12 +28,18 @@ class TimesheetApiController extends Controller
     public function fetchAndStoreTimesheet(StoreTimesheetRequest $request)
     {
         $validated = $request->validated();
+        $existingTimesheet = Timesheet::where('timesheet_id', $validated['timesheet_id'])->first();
+
+        if ($existingTimesheet && $existingTimesheet->status === 'locked') {
+            return response()->json([
+                'status' => 403,
+                'success' => false,
+                'message' => 'Timesheet is locked and cannot be overwritten'
+            ], 403);
+        }
 
         try {
-            // Mengambil data timesheet dari API
             $timesheetFetched = $this->fetchTimesheetDataFromAPI($validated['timesheet_id']);
-
-            // Memastikan data yang diambil valid
             if (!$timesheetFetched) {
                 return response()->json([
                     'status' => 404,
@@ -39,9 +48,7 @@ class TimesheetApiController extends Controller
                 ], 404);
             }
 
-            // Menyimpan timesheet dan log waktu secara atomik
             DB::transaction(function () use ($timesheetFetched) {
-                // simpan data karyawan terlebih dahulu
                 $employee = [
                     'employee_id' => $timesheetFetched['employee'],
                     'employee_name' => $timesheetFetched['employee_name'],
@@ -58,15 +65,15 @@ class TimesheetApiController extends Controller
                 'success' => true,
                 'message' => 'Timesheet fetched and saved successfully'
             ], 200);
-
         } catch (Exception $e) {
-            // Menangani kesalahan dengan pesan yang informatif
             return response()->json(
                 [
                     'status' => 500,
                     'success' => false,
                     'message' => 'Error: ' . $e->getMessage()
-                ],500);
+                ],
+                500
+            );
         }
     }
 
@@ -93,7 +100,34 @@ class TimesheetApiController extends Controller
      */
     private function storeTimesheet(array $timesheet)
     {
-        // Menggunakan firstOrCreate untuk menghindari duplikasi data
+        $existingTimesheet = Timesheet::where('timesheet_id', $timesheet['name'])->first();
+
+        if ($existingTimesheet && $existingTimesheet->padlock === 'locked') {
+            throw new TimesheetLockedException();
+        }
+
+        // URL dasar yang ingin ditambahkan
+        $baseUrl = 'https://erp.argatech.com';
+
+        // Menggunakan regex untuk mengganti setiap "src" URL dengan versi yang memiliki URL dasar
+        $updatedNote = preg_replace_callback(
+            '/src="([^"]+)"/',
+            function ($matches) use ($baseUrl) {
+                return 'src="' . $baseUrl . $matches[1] . '" width="50px"' . ' id="imageButton"';
+            },
+            $timesheet['note']
+        );
+
+        // Menambahkan class="flex items-center" pada setiap div yang membungkus img
+        $updatedNote = preg_replace(
+            '/<div>(\s*<img[^>]*>.*?<\/div>)/',
+            '<div class="flex flex-wrap items-center gap-4">$1',
+            $updatedNote
+        );
+
+        // Menyusun data dengan note yang sudah di-update
+        $timesheet['note'] = $updatedNote;
+
         return Timesheet::firstOrCreate(
             ['timesheet_id' => $timesheet['name']],
             [
@@ -102,7 +136,6 @@ class TimesheetApiController extends Controller
                 'end_date' => $timesheet['end_date'],
                 'total_hours' => $timesheet['total_hours'],
                 'total_billable_hours' => $timesheet['total_billable_hours'],
-                // Menghitung total tagihan dari log waktu terkait
                 'total_billable_amount' => TimeLog::where('timesheet_id', $timesheet['name'])->sum('billing_amount'),
                 'status' => $timesheet['status'],
                 'note' => $timesheet['note'],
@@ -141,6 +174,19 @@ class TimesheetApiController extends Controller
         return response()->json($timesheets);
     }
 
+
+    public function changePadlock(ChangePadlockTimesheetRequest $request, Timesheet $timesheet)
+    {
+        $padlock = $request->padlock == 'locked' ? 'unlocked' : 'locked';
+        $timesheet->update(['padlock' => $padlock]);
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Timesheet padlock change: ' . $timesheet->padlock
+        ], 200);
+    }
+
     /**
      * Menghapus timesheet berdasarkan ID yang diberikan.
      *
@@ -149,7 +195,15 @@ class TimesheetApiController extends Controller
      */
     public function destroy(string $timesheet)
     {
-        Timesheet::where('timesheet_id', $timesheet)->delete();
+        $timesheetRecord = Timesheet::where('timesheet_id', $timesheet)->first();
+
+        if ($timesheetRecord && $timesheetRecord->status === 'locked') {
+            return response()->json([
+                'message' => 'Timesheet is locked and cannot be deleted'
+            ], 403);
+        }
+
+        $timesheetRecord->delete();
         return response()->json(['message' => 'Timesheet deleted']);
     }
 }

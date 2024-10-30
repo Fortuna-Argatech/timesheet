@@ -19,7 +19,8 @@
             <h4 class="w-full font-medium">Timesheet Data</h4>
             <form method="POST" class="flex items-center w-full gap-4 py-4" id="createData">
                 @csrf
-                <select name="timesheet_id" id="timesheetSelect" class="w-full px-3 py-1 mt-1 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700">
+                <select name="timesheet_id" id="timesheetSelect"
+                    class="w-full px-3 py-1 mt-1 bg-transparent border rounded-md form-input border-slate-300/60 dark:border-slate-700 dark:text-slate-300 focus:outline-none focus:ring-0 placeholder:text-slate-400/70 placeholder:font-normal placeholder:text-sm hover:border-slate-400 focus:border-primary-500 dark:focus:border-primary-500 dark:hover:border-slate-700">
                     <option selected disabled>Select Timesheet First</option>
                 </select>
                 <div class="flex items-center gap-4">
@@ -58,6 +59,10 @@
                                 <th scope="col"
                                     class="p-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
                                     Status
+                                </th>
+                                <th scope="col"
+                                    class="p-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                    Padlock
                                 </th>
                                 </th>
                                 <th scope="col"
@@ -99,9 +104,19 @@
                                     </td>
                                     <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
                                         @php
-                                        $statusClass = $badges[$timesheet->status] ?? 'bg-gray-500/10 text-gray-500';
+                                            $statusClass =
+                                                $badges[$timesheet->status] ?? 'bg-gray-500/10 text-gray-500';
                                         @endphp
-                                        <span class="{{ $statusClass }} text-[11px] font-medium px-2.5 py-0.5 rounded h-5">{{ $timesheet->status }}</span>
+                                        <span
+                                            class="{{ $statusClass }} text-[11px] font-medium px-2.5 py-0.5 rounded h-5">{{ $timesheet->status }}</span>
+                                    </td>
+                                    <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
+                                        <button type="button" data-id="{{ $timesheet->id }}"
+                                            data-padlock="{{ $timesheet->padlock }}"
+                                            class="btn-padlock {{ $timesheet->padlock === 'unlocked' ? 'bg-gray-600/5 text-gray-600' : 'bg-indigo-600/5 text-indigo-600' }} text-[11px] font-medium px-2.5 py-0.5 rounded h-5 tippy-btn"
+                                            data-tippy-content="Click to change status" data-tippy-arrow="false"
+                                            data-tippy-interactive="true">{{ $timesheet->padlock }}
+                                        </button>
                                     </td>
                                     <td class="p-3 text-sm text-gray-500 dark:text-gray-400">
                                         {{ $timesheet->total_hours }}
@@ -116,7 +131,8 @@
                                         <a href="{{ route('timesheet.timelogs.index', $timesheet->timesheet_id) }}">
                                             <i class="text-lg text-gray-500 fas fa-eye dark:text-gray-400"></i>
                                         </a>
-                                        <button type="button" class="btn-delete" data-name="{{ $timesheet->timesheet_id }}">
+                                        <button type="button" class="btn-delete"
+                                            data-name="{{ $timesheet->timesheet_id }}">
                                             <i class="text-lg text-red-500 ti ti-trash dark:text-red-400"></i>
                                         </button>
                                     </td>
@@ -131,6 +147,16 @@
             </div>
         </div>
     </div>
+
+    @push('modals')
+        <!-- Modal untuk menampilkan gambar layar penuh -->
+        <div id="fullScreenModal" class="fixed top-0 items-center justify-center hidden w-full h-full z-999 bg-gray-500/50">
+            <div class="flex flex-col gap-4">
+                <button type="button" id="closeModal" class="inline-flex items-center p-2 mr-2 text-sm font-medium text-center text-white rounded-full w-fit bg-primary-500 hover:bg-primary-600 focus:outline-none dark:bg-primary-600 dark:hover:bg-primary-700">&times;</button>
+                <img id="modalImage" src="">
+            </div>
+        </div>
+    @endpush
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
         <script src="{{ asset('assets/libs/simple-datatables/umd/simple-datatables.js') }}"></script>
@@ -138,6 +164,8 @@
         <script src="{{ asset('assets/libs/mobius1-selectr/selectr.min.js') }}"></script>
         <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
         <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/tippy.js/tippy.all.min.js') }}"></script>
+        <script src="{{ asset('assets/js/pages/tooltip-popover.init.js') }}"></script>
         @vite('resources/js/pages/timesheet.js')
     @endpush
 

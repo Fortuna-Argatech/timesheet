@@ -38,9 +38,7 @@
         </div>
     </div>
 
-
-
-
+    @stack('modals')
     <!-- JAVASCRIPTS -->
     <script src="{{ asset('assets/libs/@popperjs/core/umd/popper.min.js') }}"></script>
     <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>

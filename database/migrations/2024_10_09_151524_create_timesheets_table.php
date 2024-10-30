@@ -24,6 +24,7 @@ return new class extends Migration
             $table->decimal('total_billed_amount', 20, 2)->nullable();
             $table->decimal('per_billed', 20, 2)->default(0)->nullable();
             $table->string('status');
+            $table->enum('padlock', ['unlocked', 'locked'])->default('unlocked');
             $table->text('note')->nullable();
             $table->timestamps();
 
